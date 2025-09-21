@@ -1,0 +1,4 @@
+NAME                                READY   STATUS    RESTARTS        AGE
+nginx-deployment-647677fc66-2rsbf   1/1     Running   1 (4m49s ago)   3d3h
+nginx-deployment-647677fc66-4jjvz   1/1     Running   1 (4m49s ago)   3d3h
+nginx-deployment-647677fc66-dqwll   1/1     Running   1 (4m49s ago)   3d3h
