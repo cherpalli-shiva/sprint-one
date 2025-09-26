@@ -1,0 +1,81 @@
+5. Services (systemctl)
+
+Services are background daemons managed by systemd.
+
+🔑 Commands
+
+systemctl status nginx → status
+
+sudo systemctl start nginx
+
+sudo systemctl stop nginx
+
+sudo systemctl enable nginx (auto-start on boot)
+
+📝 Exercise
+
+Install nginx (Debian/Ubuntu):
+
+sudo apt update && sudo apt install -y nginx
+
+
+Start service:
+
+sudo systemctl start nginx
+
+
+Check logs:
+
+journalctl -u nginx --no-pager | tail -10
+
+6. Custom Systemd Service
+
+We’ll create a small service that runs a script.
+
+Create script:
+
+echo -e '#!/bin/bash\necho "Hello DevOps $(date)" >> /tmp/devops.log' > /home/$USER/devops.sh
+chmod +x /home/$USER/devops.sh
+
+
+Create unit file:
+
+sudo nano /etc/systemd/system/devops.service
+
+
+Paste:
+
+[Unit]
+Description=DevOps Demo Service
+
+[Service]
+ExecStart=/home/YOURUSER/devops.sh
+
+[Install]
+WantedBy=multi-user.target
+
+
+Run:
+
+sudo systemctl daemon-reexec
+sudo systemctl start devops.service
+sudo systemctl status devops.service
+cat /tmp/devops.log
+
+7. Simulate High CPU
+
+Run:
+
+dd if=/dev/zero of=/dev/null &
+
+
+Open top:
+
+top
+
+
+→ See CPU at 100%.
+
+Kill it:
+
+kill -9 <pid>

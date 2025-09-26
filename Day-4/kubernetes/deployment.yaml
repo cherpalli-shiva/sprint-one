@@ -22,3 +22,10 @@ spec:
            name: app-config
         - secretRef:
             name: app-secret
+        volumeMounts:
+        - name: app-storage
+          mountPath: /app/data
+      volumes:
+      - name: app-storage
+        persistentVolumeClaim:
+          claimName: myapp-pvc
