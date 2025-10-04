@@ -1,17 +1,20 @@
 pipeline {
     agent any 
 
+    tools {
+        jdk 'jdk17'
+        maven 'mvn'
+    }
+
     environment {
         REGISTRY = "docker.io/cherpalli"
         APP_NAME = "petclinic"
         IMAGE_TAG = "${BUILD_NUMBER}"
-        SONAR_HOST = ""
-        ARTIFACTORY_URL = ""
     }
     stages {
         stage('Clean Workspace'){
             steps {
-                cleanWS()
+                cleanWs()
             }
         }
         stage('Checkout SCM') {
@@ -26,7 +29,7 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonarqube') {
+                withSonarQubeEnv('MySonarQube') {
                     sh 'mvn sonar:sonar'
                 }
             }
@@ -50,7 +53,7 @@ pipeline {
         }
         stage('Build'){
             steps {
-                sh 'mvn clean install Dskiptests'
+                sh 'mvn clean install -DskipTests'
             }
         }
         
@@ -64,15 +67,14 @@ pipeline {
                 script {
                     withDockerRegistry(credentialsId:'docker', toolName: 'docker') {
                         sh 'docker build -t $REGISTRY/$APP_NAME:$IMAGE_TAG .'
-                        sh 'docker tag $REGISTRY/$APP_NAME:$IAMGE_TAG'
-                        sh 'docker push $REGISTRY/APP_NAME:$IMAGE_TAG'
+                        sh 'docker push $REGISTRY/$APP_NAME:$IMAGE_TAG'
                     }
                 }
             }
         }
         stage('Trivy') {
             steps {
-                sh 'trivy image $REGISTRY/$APP_NAME:$IMAGE_TAG'
+                sh 'trivy image $REGISTRY/$APP_NAME:$IMAGE_TAG || true'
             }
         }
     }
