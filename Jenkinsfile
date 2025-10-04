@@ -56,12 +56,6 @@ pipeline {
                 sh 'mvn clean install -DskipTests'
             }
         }
-        
-        stage('Publish to Artifactory') {
-            steps {
-
-            }
-        }
         stage('Build Docker image') {
             steps {
                 script {
